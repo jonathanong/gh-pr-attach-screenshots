@@ -96,6 +96,16 @@ const options = parseArgs(["--pr", "123", "./screenshot.png"]);
 const newBody = upsertScreenshotsSection(existingBody, imageMarkdown, { replace: false });
 ```
 
+## Agent skill
+
+Install this skill so your AI agent automatically knows how to use this tool:
+
+```sh
+npx skills add jonathanong/gh-pr-attach-screenshots -a claude-code
+```
+
+The [`skills`](https://www.npmjs.com/package/skills) CLI supports many agents besides Claude Code — pass a different `-a` flag for OpenAI Codex, Cursor, and others. The skill covers invocation, prerequisites, and the browser-screenshot recipe.
+
 ## Agent usage notes
 
 This tool is designed for use by AI agents. Key behaviors:
