@@ -18,12 +18,12 @@ description: Use this skill when the user asks to attach a screenshot to a GitHu
 
 Run without installing (recommended for agents):
 
-| Package manager | Command |
-|---|---|
-| npm | `npx gh-pr-attach-screenshots ./screenshot.png` |
-| pnpm | `pnpm dlx gh-pr-attach-screenshots ./screenshot.png` |
-| yarn | `yarn dlx gh-pr-attach-screenshots ./screenshot.png` |
-| bun | `bunx gh-pr-attach-screenshots ./screenshot.png` |
+| Package manager | Command                                              |
+| --------------- | ---------------------------------------------------- |
+| npm             | `npx gh-pr-attach-screenshots ./screenshot.png`      |
+| pnpm            | `pnpm dlx gh-pr-attach-screenshots ./screenshot.png` |
+| yarn            | `yarn dlx gh-pr-attach-screenshots ./screenshot.png` |
+| bun             | `bunx gh-pr-attach-screenshots ./screenshot.png`     |
 
 Common variants:
 
@@ -83,6 +83,6 @@ When you need to produce the image first:
 1. Use the available browser MCP tool to navigate to the page and take a screenshot:
    - `mcp__claude-in-chrome__browser_take_screenshot`
    - `mcp__plugin_playwright_playwright__browser_take_screenshot`
-2. Save to a temp file: `mktemp /tmp/pr-screenshot-XXXX.png`
+2. Save to a temp file (e.g., /tmp/screenshot.png)
 3. Run the CLI with that path.
 4. Delete the temp file when done.
