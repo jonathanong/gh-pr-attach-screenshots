@@ -1,5 +1,7 @@
 # gh-pr-attach-screenshots
 
+> The canonical consumer-facing usage guide lives in `skills/gh-pr-attach-screenshots/SKILL.md`. The dog-fooding workflow below extends it for development work on this repo specifically.
+
 ## Dog-fooding: attach a PR screenshot
 
 When you open or update a pull request for this project, dog-food the tool by attaching a screenshot of the PR to its own description:
