@@ -64,9 +64,9 @@ jobs:
           git tag -a "v$VERSION" -m "v$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - run: git push origin HEAD:main --follow-tags
+      - run: pnpm publish --provenance --access public --no-git-checks --ignore-scripts
 
-      - run: pnpm publish --provenance --access public --no-git-checks
+      - run: git push origin HEAD:main --follow-tags
 
       - name: Create GitHub release
         env:
