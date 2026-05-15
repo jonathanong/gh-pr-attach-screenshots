@@ -1,6 +1,6 @@
 {
   "name": "gh-pr-attach-screenshots",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Upload screenshots with gh-image and attach them to a GitHub PR description",
   "keywords": [
     "agent",
