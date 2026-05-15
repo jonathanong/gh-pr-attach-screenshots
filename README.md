@@ -119,12 +119,3 @@ pnpm format       # oxfmt
 pnpm test         # run tests
 pnpm test:coverage  # run tests with 100% coverage gate
 ```
-
-## GitHub repository settings for auto-merge
-
-The Dependabot auto-merge workflow requires two repository settings:
-
-1. **Allow auto-merge** — Settings → General → Pull Requests → Allow auto-merge
-2. **Allow GitHub Actions to create and approve pull requests** — Settings → Actions → General → Workflow permissions
-
-If either is disabled, the workflow logs a warning and skips that step.
