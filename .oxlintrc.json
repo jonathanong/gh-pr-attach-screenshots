@@ -1,0 +1,6 @@
+{
+  "$schema": "https://cdn.jsdelivr.net/gh/oxc-project/oxc@main/crates/oxc_linter/schemas/oxlintrc.json",
+  "rules": {
+    "max-lines": ["warn", { "max": 200 }]
+  }
+}

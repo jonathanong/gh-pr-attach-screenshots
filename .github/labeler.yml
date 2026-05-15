@@ -1,0 +1,38 @@
+max-files-changed: 100
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "pnpm-lock.yaml"
+          - ".github/dependabot.yml"
+
+npm:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "pnpm-lock.yaml"
+          - "src/**"
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - "LICENSE"
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "test/**"
+
+configuration:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "*.config.*"
+          - "tsconfig*.json"
+          - ".oxlintrc.json"

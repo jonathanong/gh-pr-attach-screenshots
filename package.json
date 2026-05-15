@@ -1,0 +1,62 @@
+{
+  "name": "gh-pr-attach-screenshots",
+  "version": "0.1.0",
+  "description": "Upload screenshots with gh-image and attach them to a GitHub PR description",
+  "keywords": [
+    "agent",
+    "cli",
+    "gh",
+    "github",
+    "pr",
+    "pull-request",
+    "screenshot"
+  ],
+  "homepage": "https://github.com/jonathanong/gh-pr-attach-screenshots",
+  "bugs": {
+    "url": "https://github.com/jonathanong/gh-pr-attach-screenshots/issues"
+  },
+  "license": "MIT",
+  "author": "Jonathan Ong <jonathanrichardong@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonathanong/gh-pr-attach-screenshots.git"
+  },
+  "bin": {
+    "gh-pr-attach-screenshots": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json && chmod +x dist/cli.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "oxlint --deny-warnings .",
+    "lint:fix": "oxlint --deny-warnings --fix .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "prepublishOnly": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test:coverage"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^4.1.6",
+    "oxfmt": "^0.50.0",
+    "oxlint": "^1.65.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.6"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@11.1.2"
+}
