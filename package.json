@@ -49,9 +49,9 @@
     "prepublishOnly": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test:coverage"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
+    "@types/node": "^26.0.0",
     "@vitest/coverage-v8": "^4.1.6",
-    "oxfmt": "^0.55.0",
+    "oxfmt": "^0.56.0",
     "oxlint": "^1.65.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.6"
