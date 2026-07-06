@@ -27,4 +27,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7.0.0
       - name: Run actionlint
-        uses: raven-actions/actionlint@v2.1.2
+        uses: raven-actions/actionlint@v2.2.0
