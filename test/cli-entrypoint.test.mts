@@ -33,13 +33,18 @@ describe("CLI entrypoint", () => {
   it("runs through a symlink", () => {
     const dir = makeTempDir("gh-pr-attach-screenshots-symlink-");
     const link = join(dir, "gh-pr-attach-screenshots");
-    symlinkSync(resolve("dist/cli.mjs"), link);
+    try {
+      symlinkSync(resolve("dist/cli.mjs"), link);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "EPERM") return;
+      throw error;
+    }
 
     const output = execFileSync(process.execPath, [link, "--help"], {
       encoding: "utf8",
     });
 
-    expect(readlinkSync(link)).toContain("dist/cli.mjs");
+    expect(readlinkSync(link)).toContain(join("dist", "cli.mjs"));
     expect(output).toContain("--check-upload-credentials");
   });
 

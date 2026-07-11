@@ -24,6 +24,15 @@ export function main(args: string[]): void {
   }
 }
 
-if (process.argv[1] !== undefined && realpathSync(process.argv[1]) === import.meta.filename) {
+export function isMainModule(entrypoint: string | undefined, moduleFilename: string): boolean {
+  if (entrypoint === undefined) return false;
+  try {
+    return realpathSync(entrypoint) === moduleFilename;
+  } catch {
+    return false;
+  }
+}
+
+if (isMainModule(process.argv[1], import.meta.filename)) {
   main(process.argv.slice(2));
 }

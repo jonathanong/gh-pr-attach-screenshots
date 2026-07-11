@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("../src/attach.mts");
 vi.mock("../src/github-cli.mts");
 
-import { main } from "../src/cli.mts";
+import { isMainModule, main } from "../src/cli.mts";
 
 describe("cli", () => {
   const savedArgv = process.argv.slice();
@@ -104,5 +104,13 @@ describe("cli", () => {
       // process.exit(0) was thrown by the mock
     }
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Usage:"));
+  });
+
+  it("does not throw when the entrypoint cannot be resolved", () => {
+    expect(isMainModule("/definitely/missing/cli.mjs", import.meta.filename)).toBe(false);
+  });
+
+  it("is not main without an entrypoint", () => {
+    expect(isMainModule(undefined, import.meta.filename)).toBe(false);
   });
 });
