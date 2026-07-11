@@ -33,6 +33,12 @@ See [cli.github.com](https://cli.github.com) for Linux/Windows install options.
 gh extension install drogers0/gh-image
 ```
 
+Version 0.2.0 or newer is required for credential preflight support. Upgrade an older install with:
+
+```sh
+gh extension upgrade drogers0/gh-image
+```
+
 > This step may need to run **outside any sandbox** — the extension stores credentials
 > under `~/.config/gh` and may read browser session tokens.
 
@@ -52,13 +58,34 @@ npx gh-pr-attach-screenshots ./screenshot.png
 
 ```
 gh-pr-attach-screenshots [--pr <number|branch|url>] [--repo owner/repo] [--replace] <image...>
+gh-pr-attach-screenshots --check-upload-credentials
 
 Options:
   --pr <value>    PR number, branch name, or URL (defaults to current branch PR)
   --repo <value>  Repository in owner/repo format (defaults to current repo)
   --replace       Replace existing screenshots instead of merging
+  --check-upload-credentials
+                  Verify gh-image upload credentials without uploading
   --help, -h      Show this help message
 ```
+
+Before browser QA or screenshot capture, check that upload credentials are available:
+
+```sh
+gh-pr-attach-screenshots --check-upload-credentials
+```
+
+This standalone mode checks only the browser-session credential used by `gh-image`. It does not
+upload an image or verify repository write access or SAML authorization; the attachment command
+still validates those requirements.
+
+`gh-image` reads `GH_SESSION_TOKEN` when set and otherwise discovers a `user_session` cookie from a
+supported browser. Prefer `GH_SESSION_TOKEN` for non-interactive use. Ordinary `GH_TOKEN` and GitHub
+CLI personal access token credentials cannot authenticate GitHub image uploads.
+
+> **Security:** A `user_session` token grants full account access. Treat it like a password, never
+> pass it in command arguments, and never print it in logs. This wrapper intentionally has no
+> `--token` option.
 
 **Examples**
 
@@ -111,6 +138,7 @@ The [`skills`](https://www.npmjs.com/package/skills) CLI supports many agents be
 This tool is designed for use by AI agents. Key behaviors:
 
 - **Fail-fast**: if `gh` or the `gh-image` extension is missing, the tool exits immediately with actionable install instructions.
+- **Credential preflight**: `--check-upload-credentials` verifies the upload session before browser QA without uploading or reading a PR.
 - **Idempotent**: running the tool multiple times merges images without duplicates.
 - **Success feedback**: after a successful attach, the tool prints to stderr:
   ```

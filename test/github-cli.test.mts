@@ -6,7 +6,6 @@ import {
   ensureGhImageExtension,
   formatCommandError,
   gh,
-  runCommand,
   validateGh,
 } from "../src/github-cli.mts";
 import type { CommandResult } from "../src/github-cli.mts";
@@ -57,6 +56,12 @@ describe("ensureGhImageExtension", () => {
   it("throws formatted error when extension list command fails", () => {
     expect(() => ensureGhImageExtension(() => fail({ stderr: "auth error" }))).toThrow(
       "gh extension list failed: auth error",
+    );
+  });
+
+  it("returns the installed extension metadata", () => {
+    expect(ensureGhImageExtension(() => ok("gh image\tdrogers0/gh-image\tv1.1.0\n"))).toBe(
+      "gh image\tdrogers0/gh-image\tv1.1.0",
     );
   });
 });
@@ -134,25 +139,5 @@ describe("editPrBody", () => {
 
     expect(tempDir).toBeDefined();
     expect(existsSync(tempDir!)).toBe(false);
-  });
-});
-
-describe("runCommand", () => {
-  it("captures stdout and exit code 0 on success", () => {
-    const result = runCommand("node", ["-e", 'process.stdout.write("hi")']);
-    expect(result.status).toBe(0);
-    expect(result.stdout).toBe("hi");
-    expect(result.error).toBeUndefined();
-  });
-
-  it("captures non-zero exit code", () => {
-    const result = runCommand("node", ["-e", "process.exit(3)"]);
-    expect(result.status).toBe(3);
-  });
-
-  it("sets error for ENOENT (command not found)", () => {
-    const result = runCommand("definitely-not-a-real-command-xyz", []);
-    expect(result.error).toBeDefined();
-    expect(result.status).toBeNull();
   });
 });

@@ -2,17 +2,24 @@ import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../src/attach.mts");
+vi.mock("../src/github-cli.mts");
 
-import { main } from "../src/cli.mts";
+import { isMainModule, main } from "../src/cli.mts";
 
 describe("cli", () => {
   const savedArgv = process.argv.slice();
   let mockAttach: ReturnType<typeof vi.fn>;
+  let mockCheck: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     const { attachPrScreenshots } = await import("../src/attach.mts");
+    const { checkUploadCredentials } = await import("../src/github-cli.mts");
     mockAttach = vi.mocked(attachPrScreenshots);
+    mockAttach.mockClear();
     mockAttach.mockReturnValue("");
+    mockCheck = vi.mocked(checkUploadCredentials);
+    mockCheck.mockClear();
+    mockCheck.mockReturnValue({ stdout: "", stderr: "" });
     vi.spyOn(process, "exit").mockImplementation((code) => {
       throw Object.assign(new Error("process.exit"), { code });
     });
@@ -33,6 +40,21 @@ describe("cli", () => {
       images: ["image.png"],
       replace: false,
     });
+  });
+
+  it("runs the standalone credential preflight without attaching", () => {
+    mockCheck.mockReturnValue({ stdout: "octocat\n", stderr: "token valid\n" });
+    main(["--check-upload-credentials"]);
+    expect(mockCheck).toHaveBeenCalledOnce();
+    expect(mockAttach).not.toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith("octocat");
+    expect(console.error).toHaveBeenCalledWith("token valid");
+  });
+
+  it("does not print empty credential diagnostics", () => {
+    main(["--check-upload-credentials"]);
+    expect(console.log).not.toHaveBeenCalled();
+    expect(console.error).not.toHaveBeenCalled();
   });
 
   it("logs help and exits 0 for --help", () => {
@@ -82,5 +104,13 @@ describe("cli", () => {
       // process.exit(0) was thrown by the mock
     }
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Usage:"));
+  });
+
+  it("does not throw when the entrypoint cannot be resolved", () => {
+    expect(isMainModule("/definitely/missing/cli.mjs", import.meta.filename)).toBe(false);
+  });
+
+  it("is not main without an entrypoint", () => {
+    expect(isMainModule(undefined, import.meta.filename)).toBe(false);
   });
 });
