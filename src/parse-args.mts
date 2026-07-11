@@ -39,6 +39,10 @@ export function parseCliArgs(args: string[]): CliMode {
     return { mode: "check-upload-credentials" };
   }
 
+  return { mode: "attach", options: parseAttachArgs(args) };
+}
+
+function parseAttachArgs(args: string[]): AttachScreenshotOptions {
   const parsed: AttachScreenshotOptions = { images: [], replace: false };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -82,7 +86,7 @@ export function parseCliArgs(args: string[]): CliMode {
     throw new Error(`At least one image path is required.\n\n${usage()}`);
   }
 
-  return { mode: "attach", options: parsed };
+  return parsed;
 }
 
 function readOptionValue(args: string[], index: number, option: string): string {

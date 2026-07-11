@@ -110,7 +110,7 @@ export type CommandDiagnostics = { stderr: string; stdout: string };
 export function checkUploadCredentials(runner: CommandRunner = runCommand): CommandDiagnostics {
   validateGh(runner);
   const extensionLine = ensureGhImageExtension(runner);
-  const versionMatch = extensionLine.match(/\bv?(\d+)\.(\d+)\.(\d+)\b/);
+  const versionMatch = /\bv?(\d+)\.(\d+)\.(\d+)\b/.exec(extensionLine);
   if (
     versionMatch === null ||
     compareVersion(
