@@ -91,6 +91,20 @@ describe("parseCliArgs", () => {
     });
   });
 
+  it("parses attachment mode options with backward-compatible semantics", () => {
+    expect(parseCliArgs(["--pr", "1", "--repo=owner/repo", "--replace", "a.png", "b.png"])).toEqual(
+      {
+        mode: "attach",
+        options: {
+          pr: "1",
+          repo: "owner/repo",
+          replace: true,
+          images: ["a.png", "b.png"],
+        },
+      },
+    );
+  });
+
   it("accepts repeated credential check flags", () => {
     expect(parseCliArgs(["--check-upload-credentials", "--check-upload-credentials"])).toEqual({
       mode: "check-upload-credentials",
