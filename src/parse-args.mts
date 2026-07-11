@@ -12,6 +12,33 @@ export class HelpRequested extends Error {
 }
 
 export function parseArgs(args: string[]): AttachScreenshotOptions {
+  const parsed = parseCliArgs(args);
+  if (parsed.mode === "check-upload-credentials") {
+    throw new Error(
+      "--check-upload-credentials is a standalone CLI mode and cannot be parsed as attachment options.",
+    );
+  }
+  return parsed.options;
+}
+
+export type CliMode =
+  | { mode: "attach"; options: AttachScreenshotOptions }
+  | { mode: "check-upload-credentials" };
+
+export function parseCliArgs(args: string[]): CliMode {
+  if (args.some((arg) => arg === "--help" || arg === "-h")) {
+    throw new HelpRequested();
+  }
+
+  if (args.includes("--check-upload-credentials")) {
+    if (args.some((arg) => arg !== "--check-upload-credentials")) {
+      throw new Error(
+        `--check-upload-credentials cannot be combined with attachment arguments.\n\n${usage()}`,
+      );
+    }
+    return { mode: "check-upload-credentials" };
+  }
+
   const parsed: AttachScreenshotOptions = { images: [], replace: false };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -44,10 +71,6 @@ export function parseArgs(args: string[]): AttachScreenshotOptions {
       continue;
     }
 
-    if (arg === "--help" || arg === "-h") {
-      throw new HelpRequested();
-    }
-
     if (arg.startsWith("-")) {
       throw new Error(`Unknown option "${arg}".\n\n${usage()}`);
     }
@@ -59,7 +82,7 @@ export function parseArgs(args: string[]): AttachScreenshotOptions {
     throw new Error(`At least one image path is required.\n\n${usage()}`);
   }
 
-  return parsed;
+  return { mode: "attach", options: parsed };
 }
 
 function readOptionValue(args: string[], index: number, option: string): string {
@@ -73,6 +96,7 @@ function readOptionValue(args: string[], index: number, option: string): string 
 function usage(): string {
   return [
     "Usage: gh-pr-attach-screenshots [--pr <number|branch|url>] [--repo owner/repo] [--replace] <image...>",
+    "       gh-pr-attach-screenshots --check-upload-credentials",
     "",
     "Uploads screenshots with gh-image and attaches them to the PR description.",
     "",
@@ -80,6 +104,8 @@ function usage(): string {
     "  --pr <value>    PR number, branch name, or URL (defaults to current branch PR)",
     "  --repo <value>  Repository in owner/repo format (defaults to current repo)",
     "  --replace       Replace existing screenshots instead of merging",
+    "  --check-upload-credentials",
+    "                  Verify gh-image upload credentials without uploading",
     "  --help, -h      Show this help message",
     "",
     "Prerequisites:",

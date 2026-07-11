@@ -1,7 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { HelpRequested, parseArgs } from "../src/parse-args.mts";
+import { HelpRequested, parseArgs, parseCliArgs } from "../src/parse-args.mts";
 
 describe("parseArgs", () => {
+  it("keeps help precedence over invalid and conflicting arguments", () => {
+    expect(() => parseArgs(["--unknown", "--check-upload-credentials", "--help"])).toThrow(
+      HelpRequested,
+    );
+  });
+
+  it("rejects credential check mode through the attachment API", () => {
+    expect(() => parseArgs(["--check-upload-credentials"])).toThrow("standalone CLI mode");
+  });
+
   it("parses all options", () => {
     expect(parseArgs(["--pr", "1", "--repo=owner/repo", "--replace", "a.png", "b.png"])).toEqual({
       pr: "1",
@@ -71,5 +81,36 @@ describe("parseArgs", () => {
 
   it("no-images error includes usage", () => {
     expect(() => parseArgs(["--pr", "1"])).toThrow("Usage:");
+  });
+});
+
+describe("parseCliArgs", () => {
+  it("parses the credential check mode", () => {
+    expect(parseCliArgs(["--check-upload-credentials"])).toEqual({
+      mode: "check-upload-credentials",
+    });
+  });
+
+  it("accepts repeated credential check flags", () => {
+    expect(parseCliArgs(["--check-upload-credentials", "--check-upload-credentials"])).toEqual({
+      mode: "check-upload-credentials",
+    });
+  });
+
+  it.each([
+    ["an image", ["--check-upload-credentials", "image.png"]],
+    ["--pr", ["--check-upload-credentials", "--pr", "1"]],
+    ["--repo", ["--check-upload-credentials", "--repo", "owner/repo"]],
+    ["--replace", ["--check-upload-credentials", "--replace"]],
+  ])("rejects %s in credential check mode", (_label, args) => {
+    expect(() => parseCliArgs(args)).toThrow(
+      "--check-upload-credentials cannot be combined with attachment arguments",
+    );
+  });
+
+  it("gives help precedence in credential check mode", () => {
+    expect(() => parseCliArgs(["--check-upload-credentials", "image.png", "--help"])).toThrow(
+      HelpRequested,
+    );
   });
 });

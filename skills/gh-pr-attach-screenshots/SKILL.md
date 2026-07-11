@@ -41,6 +41,16 @@ npx gh-pr-attach-screenshots --replace ./new.png
 npx gh-pr-attach-screenshots --repo owner/repo ./screenshot.png
 ```
 
+Before browser QA or screenshot capture, run the credential-only preflight outside the sandbox:
+
+```sh
+pnpm dlx gh-pr-attach-screenshots --check-upload-credentials
+```
+
+Continue to visual QA if it fails, but skip capture performed solely for PR attachment and report
+the exact diagnostic. The preflight performs no upload or PR operation. Repository write access and
+SAML authorization are checked only by the final attachment.
+
 `--pr` defaults to the current branch's PR. `--repo` defaults to the current repo.
 
 ## Prerequisites & fail-fast recovery
@@ -62,7 +72,15 @@ See [cli.github.com](https://cli.github.com) for Linux/Windows install options.
 gh extension install drogers0/gh-image
 ```
 
+Version 0.2.0 or newer is required. Upgrade with
+`gh extension upgrade drogers0/gh-image` if the preflight reports an unsupported extension.
+
 > Run this command **outside any sandbox** — the extension stores credentials under `~/.config/gh` and may read browser session tokens.
+
+`gh-image` prefers `GH_SESSION_TOKEN` and otherwise discovers a `user_session` cookie from a
+supported browser. Ordinary `GH_TOKEN` and GitHub CLI personal access token credentials cannot
+upload images. A session token grants full account access: treat it like a password and never put it
+in arguments or logs. The wrapper intentionally provides no `--token` option.
 
 **Image file not found:** the tool prints `Screenshot not found: <path>`. Check the path and retry.
 
