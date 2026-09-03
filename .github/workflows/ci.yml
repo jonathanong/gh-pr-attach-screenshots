@@ -39,6 +39,8 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: pnpm/action-setup@v6.0.10
@@ -50,5 +52,5 @@ jobs:
       - run: pnpm test:coverage
       - uses: codecov/codecov-action@v7.0.0
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
           files: ./coverage/lcov.info
