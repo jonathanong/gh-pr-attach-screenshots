@@ -50,7 +50,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:coverage
-      - uses: codecov/codecov-action@v7.0.0
+      - uses: codecov/codecov-action@v7.1.0
         with:
           use_oidc: true
           files: ./coverage/lcov.info
